@@ -1,5 +1,5 @@
 use crate::constants::*;
-use pendulum::Pendulum;
+use pendulum::Harmonograph;
 use wasm_bindgen::prelude::*;
 use web_sys::CanvasRenderingContext2d;
 
@@ -19,7 +19,7 @@ pub fn main_js() -> Result<(), JsValue> {
 #[wasm_bindgen]
 pub struct Renderer {
     frame_count: i32,
-    pendulum: Pendulum,
+    pendulum: Harmonograph,
 }
 
 #[wasm_bindgen]
@@ -28,7 +28,7 @@ impl Renderer {
     pub fn js_constructor() -> Self {
         Self {
             frame_count: 0,
-            pendulum: Pendulum::new((1000., 1000.0)),
+            pendulum: Harmonograph::new(),
         }
     }
 

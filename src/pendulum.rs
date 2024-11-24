@@ -1,6 +1,9 @@
+use std::f64::consts::PI;
+
+use wasm_bindgen::JsValue;
 use web_sys::CanvasRenderingContext2d;
 
-use crate::ITERATIONS_PER_FRAME;
+use crate::{ITERATIONS_PER_FRAME, WINDOW_HEIGHT, WINDOW_WIDTH};
 
 pub struct Pendulum {
     /// x position
@@ -44,14 +47,29 @@ impl Pendulum {
         self.points.push((self.x, self.y));
     }
 
+    const POSITION_OFFSET: f64 = WINDOW_WIDTH / 2.0;
     pub fn flush(&mut self, ctx: &CanvasRenderingContext2d) {
+        ctx.clear_rect(0.0, 0.0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ctx.set_fill_style(&JsValue::from_str("green"));
+        ctx.set_stroke_style(&JsValue::from_str("#000000"));
         let to_draw = std::mem::take(&mut self.points);
         to_draw.into_iter().enumerate().for_each(|(i, (x, y))| {
-            if i == 0 {
-                ctx.move_to(x, y)
-            } else {
-                ctx.line_to(x, y)
-            }
+            ctx.begin_path();
+            let _ = ctx.ellipse(
+                x + Self::POSITION_OFFSET,
+                y + Self::POSITION_OFFSET,
+                10.0,
+                10.0,
+                0.0,
+                0.0,
+                2.0 * PI,
+            );
+            ctx.fill();
+            //if i == 0 {
+            //    ctx.move_to(x + Self::POSITION_OFFSET, y + Self::POSITION_OFFSET)
+            //} else {
+            //    ctx.line_to(x + Self::POSITION_OFFSET, y + Self::POSITION_OFFSET)
+            //}
         });
         ctx.stroke();
     }
